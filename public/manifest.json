@@ -1,0 +1,15 @@
+{
+  "name": "Ticketmaster",
+  "short_name": "Tickets",
+  "description": "Buy and sell tickets for your favorite events",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#026CDF",
+  "theme_color": "#026CDF",
+  "categories": ["events", "tickets", "entertainment"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" }
+  ]
+}
