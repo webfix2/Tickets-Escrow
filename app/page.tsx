@@ -50,6 +50,7 @@ export default function Home() {
     const groups: Record<string, {
       eventName: string; dateTime: string; venue: string; location: string;
       category: string; coverImage: string; ticketStatus: string; listings: Ticket[];
+      tournament: string; subcategory: string;
     }> = {};
 
     tickets.forEach(t => {
@@ -64,6 +65,8 @@ export default function Home() {
           venue: t.venue || 'TBA', location: t.location || 'TBA',
           category: t.category || 'Event', coverImage: t.coverImage || '',
           ticketStatus: t.ticketStatus, listings: [],
+          tournament: t.tournament || '',
+          subcategory: t.subcategory || '',
         };
       }
       if (t.section && t.paymentSettings) {
@@ -243,7 +246,7 @@ export default function Home() {
                 {featuredEvents.map((event) => {
                   const minPrice = getMinPrice(event.listings);
                   const isSoldOut = !minPrice;
-                  const subtitle = event.category ? `${event.category}` : '';
+                  const subtitle = [event.tournament, event.subcategory].filter(Boolean).join(' · ');
                   const baseSlug = `/event-details?name=${encodeURIComponent(event.eventName)}&date=${encodeURIComponent(event.dateTime)}`;
                   const eventSlug = token ? `${baseSlug}&token=${token}` : baseSlug;
 
@@ -275,6 +278,13 @@ export default function Home() {
                             {event.category || 'Event'}
                           </span>
                         </div>
+                        {event.subcategory && (
+                          <div className="absolute top-3 right-3">
+                            <span className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-blue-50 text-blue-700">
+                              {event.subcategory}
+                            </span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="p-4">

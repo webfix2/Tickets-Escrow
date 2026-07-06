@@ -64,6 +64,8 @@ export default function EventDashboardPage() {
             ticketStatus: string;
             listings: Ticket[];
             totalListings: number;
+            tournament: string;
+            subcategory: string;
         }> = {};
 
         allTickets.forEach(ticket => {
@@ -85,6 +87,8 @@ export default function EventDashboardPage() {
                     ticketStatus: ticket.ticketStatus,
                     listings: [],
                     totalListings: 0,
+                    tournament: ticket.tournament || '',
+                    subcategory: ticket.subcategory || '',
                 };
             }
 
@@ -106,7 +110,9 @@ export default function EventDashboardPage() {
             event.eventName.toLowerCase().includes(q) ||
             event.venue.toLowerCase().includes(q) ||
             event.location.toLowerCase().includes(q) ||
-            event.category.toLowerCase().includes(q)
+            event.category.toLowerCase().includes(q) ||
+            event.tournament.toLowerCase().includes(q) ||
+            event.subcategory.toLowerCase().includes(q)
         );
     }, [groupedEvents, searchQuery]);
 
@@ -224,6 +230,14 @@ export default function EventDashboardPage() {
                                             <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full whitespace-nowrap">
                                                 {event.category}
                                             </span>
+                                            {(() => {
+                                              const s = [event.tournament, event.subcategory].filter(Boolean).join(' · ');
+                                              return s ? (
+                                                <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full whitespace-nowrap">
+                                                  {s}
+                                                </span>
+                                              ) : null;
+                                            })()}
                                             {isHidden && (
                                                 <span className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full whitespace-nowrap">
                                                     Hidden

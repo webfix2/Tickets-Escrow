@@ -67,6 +67,7 @@ export interface Ticket {
   hospitalityArea?: string;
   category?: string;
   subcategory?: string;
+  tournament?: string;
   ticketHolder?: string;
   ticketFolderId: string;
   ageRestriction: string;

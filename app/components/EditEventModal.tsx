@@ -25,6 +25,8 @@ export default function EditEventModal({ eventName: initialEventName, dateTime: 
   const firstRow = currentListings[0] || {} as Ticket;
 
   const [category, setCategory] = useState(firstRow.category || 'Football');
+  const [tournament, setTournament] = useState(firstRow.tournament || '');
+  const [subcategory, setSubcategory] = useState(firstRow.subcategory || '');
   const [homeTeam, setHomeTeam] = useState('');
   const [awayTeam, setAwayTeam] = useState('');
   const [eventTitle, setEventTitle] = useState('');
@@ -138,10 +140,8 @@ export default function EditEventModal({ eventName: initialEventName, dateTime: 
         ? formListings 
         : [{ ticketId: firstRow.ticketId, section: '', row: '', seatNumbers: '', price: '', currency: 'USD', notes: '' }];
 
-      // A list of row IDs that will remain in the database
       const savedTicketIds = new Set<string>();
 
-      // 2. Save / Update rows
       for (let i = 0; i < listingsToSave.length; i++) {
         const item = listingsToSave[i];
         const isUpdate = !!item.ticketId && existingListingIds.includes(item.ticketId);
@@ -157,6 +157,8 @@ export default function EditEventModal({ eventName: initialEventName, dateTime: 
         // Event metadata
         payload.append("eventName", finalEventName);
         payload.append("category", category);
+        payload.append("tournament", tournament);
+        payload.append("subcategory", subcategory);
         payload.append("venue", venue);
         payload.append("location", finalLocation);
         payload.append("dateTime", dateTime);
@@ -187,14 +189,10 @@ export default function EditEventModal({ eventName: initialEventName, dateTime: 
         }
       }
 
-      // 3. Sync event metadata updates to any remaining existing listings not edited in the form loops
-      // E.g. if we have listings that didn't change but the event name did, wait, since we mapped all listings in the form, 
-      // they are all processed. But if there are any other rows in currentListings that are NOT in savedTicketIds,
-      // it means they were deleted by the admin!
+      // 2. Soft-delete any previously existing rows not in savedTicketIds
       const deletedListingIds = existingListingIds.filter(id => !savedTicketIds.has(id));
       
       for (const delId of deletedListingIds) {
-        // Soft delete this row
         const payload = new URLSearchParams();
         payload.append("action", "deleteTicket");
         payload.append("ticketId", delId);
@@ -266,6 +264,27 @@ export default function EditEventModal({ eventName: initialEventName, dateTime: 
                 <option value="Boxing">Boxing</option>
                 <option value="Rugby">Rugby</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2 ml-1">Tournament</label>
+              <input
+                type="text"
+                value={tournament}
+                onChange={(e) => setTournament(e.target.value)}
+                placeholder="e.g. FIFA World Cup 2026"
+                className="w-full p-4 bg-[#161922] border-2 border-transparent rounded-xl focus:border-emerald-500 outline-none transition-all font-bold text-white placeholder-white/20"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2 ml-1">Subcategory</label>
+              <input
+                type="text"
+                value={subcategory}
+                onChange={(e) => setSubcategory(e.target.value)}
+                placeholder="e.g. Group A · match day 1"
+                className="w-full p-4 bg-[#161922] border-2 border-transparent rounded-xl focus:border-emerald-500 outline-none transition-all font-bold text-white placeholder-white/20"
+              />
             </div>
 
             {isTeamSport ? (

@@ -14,6 +14,8 @@ export default function AddEventModal({ onClose }: AddEventModalProps) {
   const [error, setError] = useState<string | null>(null);
 
   const [category, setCategory] = useState('Football');
+  const [tournament, setTournament] = useState('');
+  const [subcategory, setSubcategory] = useState('');
   const [homeTeam, setHomeTeam] = useState('');
   const [awayTeam, setAwayTeam] = useState('');
   const [eventTitle, setEventTitle] = useState('');
@@ -97,6 +99,8 @@ export default function AddEventModal({ onClose }: AddEventModalProps) {
         // Event info
         payload.append("eventName", finalEventName);
         payload.append("category", category);
+        payload.append("tournament", tournament);
+        payload.append("subcategory", subcategory);
         payload.append("venue", venue);
         payload.append("location", finalLocation);
         payload.append("dateTime", dateTime);
@@ -169,6 +173,27 @@ export default function AddEventModal({ onClose }: AddEventModalProps) {
                 <option value="Boxing">Boxing</option>
                 <option value="Rugby">Rugby</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2 ml-1">Tournament</label>
+              <input
+                type="text"
+                value={tournament}
+                onChange={(e) => setTournament(e.target.value)}
+                placeholder="e.g. FIFA World Cup 2026"
+                className="w-full p-4 bg-[#161922] border-2 border-transparent rounded-xl focus:border-emerald-500 outline-none transition-all font-bold text-white placeholder-white/20"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2 ml-1">Subcategory</label>
+              <input
+                type="text"
+                value={subcategory}
+                onChange={(e) => setSubcategory(e.target.value)}
+                placeholder="e.g. Group A · match day 1"
+                className="w-full p-4 bg-[#161922] border-2 border-transparent rounded-xl focus:border-emerald-500 outline-none transition-all font-bold text-white placeholder-white/20"
+              />
             </div>
 
             {isTeamSport ? (

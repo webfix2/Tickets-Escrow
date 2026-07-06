@@ -50,6 +50,7 @@ export default function EventsPage() {
     const groups: Record<string, {
       eventName: string; dateTime: string; venue: string; location: string;
       category: string; coverImage: string; listings: Ticket[];
+      tournament: string; subcategory: string;
     }> = {};
 
     tickets.forEach(t => {
@@ -64,6 +65,8 @@ export default function EventsPage() {
           venue: t.venue || 'TBA', location: t.location || 'TBA',
           category: t.category || 'Event', coverImage: t.coverImage || '',
           listings: [],
+          tournament: t.tournament || '',
+          subcategory: t.subcategory || '',
         };
       }
       if (t.section && t.paymentSettings) groups[key].listings.push(t);
@@ -192,8 +195,21 @@ export default function EventsPage() {
                           {event.category || 'Event'}
                         </span>
                       </div>
+                      {event.subcategory && (
+                        <div className="absolute top-3 right-3">
+                          <span className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-blue-50 text-blue-700">
+                            {event.subcategory}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div className="p-4">
+                      {(() => {
+                        const s = [event.tournament, event.subcategory].filter(Boolean).join(' · ');
+                        return s ? (
+                          <p className="text-[11px] text-slate-400 uppercase tracking-wider mb-1.5 font-medium truncate">{s}</p>
+                        ) : null;
+                      })()}
                       <h3 className="font-bold text-slate-900 text-base leading-snug mb-3 line-clamp-2">{event.eventName}</h3>
                       <div className="space-y-1.5 mb-4">
                         <div className="flex items-center gap-1.5 text-slate-500 text-xs">
