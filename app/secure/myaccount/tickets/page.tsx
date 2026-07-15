@@ -73,6 +73,8 @@ export default function EventDashboardPage() {
             if (ticket.admin !== localAdmin) return;
             const isNotDeleted = !ticket.deletedSTAMP || ticket.deletedSTAMP.trim() === "";
             if (!isNotDeleted) return;
+            const pList = (ticket.platform || '').toLowerCase().split(',').map(p => p.trim());
+            if (!pList.includes('escrow')) return;
 
             const groupKey = `${ticket.eventName.trim().toLowerCase()}_${ticket.dateTime}`;
 

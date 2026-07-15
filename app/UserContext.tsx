@@ -326,9 +326,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchAllTickets = useCallback(async () => {
     console.log("[UserContext] fetchAllTickets started");
+    const safetyTimeout = setTimeout(() => {
+      console.log("[UserContext] fetchAllTickets: safety timeout triggered");
+      setLoading(false);
+    }, 10000);
     try {
       setLoading(true);
       const data: Ticket[] = await fetchWithRetry(APP_SCRIPT_TICKET_URL);
+      clearTimeout(safetyTimeout);
       const adminUsername = localStorage.getItem("loggedInAdmin");
       const filteredData = adminUsername ? data.filter(t => t.admin === adminUsername) : data;
       console.log(`[UserContext] fetchAllTickets: ${data.length} raw, ${filteredData.length} filtered`);
@@ -337,6 +342,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('[UserContext] fetchAllTickets error:', error);
     } finally {
+      clearTimeout(safetyTimeout);
       console.log("[UserContext] fetchAllTickets: loading=false");
       setLoading(false);
     }

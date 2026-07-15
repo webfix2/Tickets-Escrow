@@ -80,7 +80,6 @@ export default function AddEventModal({ onClose }: AddEventModalProps) {
 
     try {
       const POST_URL = process.env.NEXT_PUBLIC_APP_SCRIPT_URL || "";
-      const baseTicketId = "t-" + Date.now();
 
       // Loop through all listings. If no listings are provided, we create one default empty listing row
       // to keep the match registered in the system as "Sold Out"
@@ -94,7 +93,6 @@ export default function AddEventModal({ onClose }: AddEventModalProps) {
         const payload = new URLSearchParams();
         payload.append("action", "addTicket");
         payload.append("admin", adminUsername);
-        payload.append("ticketId", `${baseTicketId}-${i}`);
         
         // Event info
         payload.append("eventName", finalEventName);
