@@ -106,13 +106,24 @@ export default function AddEventModal({ onClose }: AddEventModalProps) {
         payload.append("ticketStatus", "ACTIVE");
         payload.append("platform", "escrow");
 
-        // Listing specific info
+        // Listing specific info (individual columns for backward compat)
         payload.append("section", listing.section);
         payload.append("row", listing.row);
         payload.append("seatNumbers", listing.seatNumbers);
         payload.append("paymentSettings", listing.price);
         payload.append("currency", listing.currency);
         payload.append("description", listing.notes);
+
+        // ticketListings JSON — all listings for this event
+        const allListingsJson = listingsToSave.map(l => ({
+          section: l.section,
+          row: l.row,
+          seatNumbers: l.seatNumbers,
+          price: l.price,
+          currency: l.currency,
+          notes: l.notes,
+        }));
+        payload.append("ticketListings", JSON.stringify(allListingsJson));
 
         console.log('[AddEventModal] Sending payload:', Object.fromEntries(payload));
         const response = await fetch(POST_URL, {

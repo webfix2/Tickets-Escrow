@@ -82,6 +82,7 @@ export interface Ticket {
   seat?: string;
   paymentSettings?: string;
   currency?: string;
+  ticketListings?: string;
 }
 
 export interface CryptoWallets {

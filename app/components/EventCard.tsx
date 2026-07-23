@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Ticket } from '../types';
+import { parseListings } from '../utils/ticketListings';
 
 interface EventCardProps {
   eventName: string;
@@ -55,7 +56,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   };
 
   // Find lowest price
-  const activeListings = listings.filter(t => t.section && t.paymentSettings);
+  const allListings = listings.flatMap(t => parseListings(t));
+  const activeListings = allListings.filter(l => l.section || l.price);
   const isSoldOut = activeListings.length === 0;
 
   const minPriceInfo = (() => {
@@ -63,13 +65,13 @@ export const EventCard: React.FC<EventCardProps> = ({
     let minPrice = Infinity;
     let minCurrency = "USD";
     activeListings.forEach(l => {
-      const price = parseFloat(l.paymentSettings || '0');
-      if (price < minPrice) {
+      const price = parseFloat(l.price || '0');
+      if (price > 0 && price < minPrice) {
         minPrice = price;
         minCurrency = l.currency || "USD";
       }
     });
-    return { price: minPrice, currency: minCurrency };
+    return isFinite(minPrice) ? { price: minPrice, currency: minCurrency } : null;
   })();
 
   // Separate team names if Football category and eventName contains 'vs'

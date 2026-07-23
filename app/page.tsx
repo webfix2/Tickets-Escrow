@@ -5,21 +5,25 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useUser } from './UserContext';
 import { Ticket } from './types';
+import { parseListings, getMinPrice } from './utils/ticketListings';
 import Countdown from './components/Countdown';
 import AppUnavailable from './components/AppUnavailable';
+import PurchaseToast from './components/PurchaseToast';
 
 function getCurrencySymbol(code?: string) {
   const symbols: Record<string, string> = { USD: '$', GBP: '£', EUR: '€', NGN: '₦' };
   return symbols[code?.toUpperCase() || 'USD'] || code || '$';
 }
 
-function getMinPrice(listings: Ticket[]) {
+function getMinPriceFromTickets(listings: Ticket[]) {
   if (!listings.length) return null;
   let min = Infinity;
   let currency = 'USD';
-  listings.forEach(l => {
-    const p = parseFloat(l.paymentSettings || '0');
-    if (p < min) { min = p; currency = l.currency || 'USD'; }
+  listings.forEach(t => {
+    parseListings(t).forEach(l => {
+      const p = parseFloat(l.price || '0');
+      if (p > 0 && p < min) { min = p; currency = l.currency || 'USD'; }
+    });
   });
   return isFinite(min) ? { price: min, currency } : null;
 }
@@ -244,7 +248,7 @@ export default function Home() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {featuredEvents.map((event) => {
-                  const minPrice = getMinPrice(event.listings);
+                  const minPrice = getMinPriceFromTickets(event.listings);
                   const isSoldOut = !minPrice;
                   const subtitle = [event.tournament, event.subcategory].filter(Boolean).join(' · ');
                   const baseSlug = `/event-details?name=${encodeURIComponent(event.eventName)}&date=${encodeURIComponent(event.dateTime)}`;
@@ -429,6 +433,8 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <PurchaseToast tickets={tickets} />
 
       {footerEl}
     </div>

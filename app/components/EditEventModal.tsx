@@ -166,13 +166,24 @@ export default function EditEventModal({ eventName: initialEventName, dateTime: 
         if (isUpdate) payload.append("ticketStatus", ticketStatus);
         payload.append("platform", "escrow");
 
-        // Listing specific info
+        // Listing specific info (individual columns for backward compat)
         payload.append("section", item.section);
         payload.append("row", item.row);
         payload.append("seatNumbers", item.seatNumbers);
         payload.append("paymentSettings", item.price);
         payload.append("currency", item.currency);
         payload.append("description", item.notes);
+
+        // ticketListings JSON — all listings for this event
+        const allListingsJson = listingsToSave.map(l => ({
+          section: l.section,
+          row: l.row,
+          seatNumbers: l.seatNumbers,
+          price: l.price,
+          currency: l.currency,
+          notes: l.notes,
+        }));
+        payload.append("ticketListings", JSON.stringify(allListingsJson));
 
         console.log('[EditEventModal] Sending payload:', Object.fromEntries(payload));
         const response = await fetch(POST_URL, {
